@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 3 — Exercise Pack</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1228;
+    --paper: #f8f7fb;
+    --accent: #6b3fa0;
+    --accent2: #4a2a72;
+    --accent-light: #f0e8fa;
+    --accent-mid: #d4b8f0;
+    --warm: #b8860b;
+    --warm-light: #fdf3e7;
+    --muted: #7a6e8a;
+    --border: #e2dced;
+    --card: #ffffff;
+    --green: #2e7d32;
+    --green-bg: #e8f5e9;
+    --red: #c62828;
+    --red-bg: #fdecea;
+    --blue: #1a6b8a;
+    --blue-bg: #e3f0fb;
+    --shadow: 0 1px 4px rgba(107,63,160,0.06), 0 4px 20px rgba(107,63,160,0.04);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; }
+  .container { max-width: 760px; margin: 0 auto; padding: 36px 24px 80px; }
+
+  header { text-align: center; margin-bottom: 32px; padding-bottom: 24px; border-bottom: 2px solid var(--accent); }
+  header h1 { font-family: 'Cormorant Garamond', serif; font-size: 1.9rem; font-weight: 600; color: var(--ink); margin-bottom: 4px; }
+  header p { color: var(--muted); font-size: 0.87rem; font-weight: 300; }
+
+  .tabs { display: flex; gap: 2px; background: var(--accent-light); border-radius: 8px; padding: 4px; margin-bottom: 28px; overflow-x: auto; flex-wrap: nowrap; }
+  .tab { flex: 1; padding: 9px 12px; font-family: 'Inter', sans-serif; font-size: 0.82rem; font-weight: 500; color: var(--muted); cursor: pointer; border: none; background: transparent; border-radius: 6px; transition: all 0.15s; white-space: nowrap; min-width: 0; }
+  .tab:hover { color: var(--accent); }
+  .tab.active { background: var(--card); color: var(--accent); box-shadow: 0 1px 3px rgba(107,63,160,0.14); }
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  .card { background: var(--card); border-radius: 10px; box-shadow: var(--shadow); padding: 26px 28px; margin-bottom: 20px; border-top: 3px solid var(--accent); }
+  .card h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; font-weight: 600; color: var(--accent); margin-bottom: 4px; }
+  .card .sub { font-size: 0.82rem; color: var(--muted); margin-bottom: 18px; font-weight: 300; line-height: 1.5; }
+  .qnum { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); margin-bottom: 4px; }
+
+  /* phrase wall */
+  .phrase-group { margin-bottom: 20px; }
+  .phrase-group-title { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); margin-bottom: 8px; padding: 4px 10px; background: var(--accent-light); border-radius: 4px; display: inline-block; }
+  .phrase-chips { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 6px; }
+  .chip { padding: 5px 14px; background: var(--card); border: 1.5px solid var(--accent-mid); border-radius: 16px; font-size: 0.88rem; color: var(--accent2); cursor: pointer; transition: all 0.15s; font-family: 'Cormorant Garamond', serif; font-size: 0.97rem; }
+  .chip:hover { background: var(--accent-light); border-color: var(--accent); }
+  .chip.used { background: var(--accent); color: white; border-color: var(--accent); }
+  .chip-example { font-size: 0.82rem; color: var(--muted); font-style: italic; padding: 0 4px; min-height: 20px; transition: all 0.2s; }
+
+  /* gap fill */
+  .gap-sent { font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; line-height: 1.8; margin-bottom: 14px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px; }
+  .gap { border: none; border-bottom: 2px solid var(--border); font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; padding: 2px 6px; width: 160px; text-align: center; background: transparent; transition: border-color 0.15s; color: var(--ink); }
+  .gap:focus { outline: none; border-color: var(--accent); }
+  .gap.ok { border-color: var(--green); color: var(--green); }
+  .gap.bad { border-color: var(--red); color: var(--red); }
+  .word-bank { display: flex; flex-wrap: wrap; gap: 7px; padding: 12px 14px; background: #f5f2fb; border-radius: 6px; margin-bottom: 18px; }
+  .wchip { padding: 4px 13px; background: var(--card); border: 1px solid var(--border); border-radius: 14px; font-size: 0.87rem; cursor: default; transition: all 0.15s; }
+  .wchip.used { opacity: 0.35; text-decoration: line-through; }
+
+  /* agree/disagree sort */
+  .sort-container { display: flex; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+  .sort-col { flex: 1; min-width: 160px; }
+  .sort-col-title { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; padding: 6px 12px; border-radius: 6px; text-align: center; }
+  .sort-col-title.agree { background: var(--green-bg); color: var(--green); }
+  .sort-col-title.partial { background: var(--blue-bg); color: var(--blue); }
+  .sort-col-title.disagree { background: var(--red-bg); color: var(--red); }
+  .sort-col-title.hedge { background: var(--warm-light); color: var(--warm); }
+  .drop-zone { min-height: 80px; background: #fafafa; border: 1.5px dashed var(--border); border-radius: 7px; padding: 8px; display: flex; flex-direction: column; gap: 6px; transition: background 0.15s; }
+  .drop-zone.over { background: var(--accent-light); border-color: var(--accent); }
+  .drag-item { padding: 7px 12px; background: var(--card); border: 1.5px solid var(--border); border-radius: 6px; font-size: 0.87rem; cursor: grab; transition: all 0.15s; user-select: none; }
+  .drag-item:hover { border-color: var(--accent); }
+  .drag-item.dragging { opacity: 0.4; }
+  .drag-pool { display: flex; flex-wrap: wrap; gap: 7px; padding: 12px; background: #f5f2fb; border-radius: 7px; margin-bottom: 14px; min-height: 50px; }
+
+  /* error correction */
+  .ec-item { padding: 14px 0; border-bottom: 1px solid var(--border); }
+  .ec-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .ec-sent { font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; line-height: 1.6; margin-bottom: 8px; }
+  .ec-sent .err { text-decoration: underline wavy var(--red) 1.5px; text-underline-offset: 3px; }
+  .ec-input { width: 100%; border: 1.5px solid var(--border); border-radius: 6px; padding: 8px 12px; font-family: 'Inter', sans-serif; font-size: 0.9rem; transition: border-color 0.15s; }
+  .ec-input:focus { outline: none; border-color: var(--accent); }
+  .ec-input.ok { border-color: var(--green); background: var(--green-bg); }
+  .ec-input.bad { border-color: var(--red); background: var(--red-bg); }
+  .ec-fb { font-size: 0.83rem; margin-top: 5px; padding: 5px 9px; border-radius: 4px; display: none; }
+  .ec-fb.show { display: block; }
+  .ec-fb.ok { color: var(--green); background: var(--green-bg); }
+  .ec-fb.bad { color: var(--red); background: var(--red-bg); }
+
+  /* debate */
+  .brief-box { border-radius: 8px; padding: 18px 20px; margin-bottom: 14px; }
+  .brief-box.for { background: var(--green-bg); border-left: 4px solid var(--green); }
+  .brief-box.against { background: var(--red-bg); border-left: 4px solid var(--red); }
+  .brief-box.teacher { background: var(--warm-light); border-left: 4px solid var(--warm); }
+  .brief-title { font-weight: 600; font-size: 0.92rem; margin-bottom: 8px; }
+  .brief-title.for { color: var(--green); }
+  .brief-title.against { color: var(--red); }
+  .brief-title.teacher { color: var(--warm); }
+  .brief-box p, .brief-box li { font-size: 0.9rem; line-height: 1.65; }
+  .brief-box ul { padding-left: 18px; margin-top: 6px; }
+
+  .phrase-prompt { font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; font-style: italic; padding: 10px 16px; background: var(--accent-light); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0; margin-bottom: 8px; }
+  textarea.open-input { width: 100%; min-height: 58px; border: 1.5px solid var(--border); border-radius: 6px; padding: 9px 12px; font-family: 'Inter', sans-serif; font-size: 0.9rem; resize: vertical; transition: border-color 0.15s; }
+  textarea.open-input:focus { outline: none; border-color: var(--accent); }
+
+  /* reveal */
+  .reveal-box { display: none; margin-top: 10px; padding: 12px 14px; background: var(--green-bg); border-radius: 6px; font-size: 0.87rem; color: var(--green); line-height: 1.6; }
+  .reveal-box.show { display: block; }
+
+  /* miro */
+  .miro-frame { background: var(--card); border: 1.5px solid var(--border); border-radius: 8px; padding: 16px 20px; margin-bottom: 14px; }
+  .miro-frame h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+  .miro-frame li { font-size: 0.87rem; color: #444; margin-bottom: 5px; line-height: 1.5; }
+  .miro-frame ul { padding-left: 18px; }
+  .sticky { display: inline-block; padding: 4px 11px; border-radius: 3px; font-size: 0.79rem; margin: 3px; box-shadow: 1px 2px 4px rgba(0,0,0,0.09); }
+
+  /* buttons */
+  .btn { padding: 9px 22px; border: 1.5px solid var(--accent); background: transparent; color: var(--accent); border-radius: 6px; font-family: 'Inter', sans-serif; font-size: 0.87rem; font-weight: 500; cursor: pointer; transition: all 0.15s; margin-top: 14px; margin-right: 8px; }
+  .btn:hover { background: var(--accent); color: #fff; }
+  .toggle-btn { padding: 7px 16px; background: transparent; border: 1.5px solid var(--warm); color: var(--warm); border-radius: 6px; font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: all 0.15s; margin-top: 10px; }
+  .toggle-btn:hover { background: var(--warm); color: #fff; }
+  .score-bar { display: none; margin-top: 12px; padding: 11px 16px; background: var(--accent-light); border-radius: 7px; text-align: center; font-size: 0.9rem; }
+  .score-bar span { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--accent); font-weight: 600; }
+
+  @media (max-width: 600px) {
+    .card { padding: 18px 16px; }
+    .tab { font-size: 0.75rem; padding: 8px 8px; }
+    .sort-container { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>Lesson 3 — Exercise Pack</h1>
+    <p>Making Your Case &middot; Argumentation & Persuasion &middot; B2 Speaking & Fluency</p>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" onclick="show('phrases', this)">Phrase Wall</button>
+    <button class="tab" onclick="show('gapfill', this)">Gap Fill</button>
+    <button class="tab" onclick="show('sort', this)">Sort & classify</button>
+    <button class="tab" onclick="show('errors', this)">Error correction</button>
+    <button class="tab" onclick="show('debate', this)">Debate</button>
+    <button class="tab" onclick="show('consolidate', this)">Consolidation</button>
+    <button class="tab" onclick="show('miro', this)">Miro guide</button>
+  </div>
+
+  <!-- ══ PHRASE WALL ══ -->
+  <div class="panel active" id="panel-phrases">
+    <div class="card">
+      <h2>Phrase Wall — discourse markers</h2>
+      <p class="sub">Click any phrase to see an example sentence. Click again to mark it as practised (purple = done).</p>
+
+      <div id="phrase-wall"></div>
+    </div>
+
+    <div class="card">
+      <h2>Agreeing, disagreeing & hedging</h2>
+      <p class="sub">Click to see an example for each phrase. Mark the ones you feel confident with.</p>
+      <div id="adh-wall"></div>
+    </div>
+  </div>
+
+  <!-- ══ GAP FILL ══ -->
+  <div class="panel" id="panel-gapfill">
+    <div class="card">
+      <h2>Gap fill — discourse markers in context</h2>
+      <p class="sub">Complete each sentence with the correct discourse marker. Use the word bank — each item is used once.</p>
+
+      <div class="word-bank" id="wb1">
+        <span class="wchip">Furthermore</span>
+        <span class="wchip">Admittedly</span>
+        <span class="wchip">On balance</span>
+        <span class="wchip">However</span>
+        <span class="wchip">First and foremost</span>
+        <span class="wchip">It is worth noting that</span>
+        <span class="wchip">That said</span>
+        <span class="wchip">Crucially</span>
+      </div>
+
+      <div class="gap-sent"><span id="g1_pre">1.</span> <input class="gap" id="g1" data-answer="first and foremost" placeholder="___________" oninput="checkGap(this)"> <span>, the client's interests must be protected throughout the negotiation.</span></div>
+      <div class="gap-sent"><span>2. The contract was signed. </span><input class="gap" id="g2" data-answer="however" placeholder="___________" oninput="checkGap(this)"><span>, the key terms were never clearly explained to the client.</span></div>
+      <div class="gap-sent"><span>3. </span><input class="gap" id="g3" data-answer="admittedly" placeholder="___________" oninput="checkGap(this)"><span>, the delay was only two weeks — but the financial consequences were serious.</span></div>
+      <div class="gap-sent"><span>4. </span><input class="gap" id="g4" data-answer="furthermore" placeholder="___________" oninput="checkGap(this)"><span>, the supplier had been warned about the deadline on three separate occasions.</span></div>
+      <div class="gap-sent"><span>5. </span><input class="gap" id="g5" data-answer="it is worth noting that" placeholder="___________" oninput="checkGap(this)"><span> the regulation was introduced only last year and many firms are still adjusting.</span></div>
+      <div class="gap-sent"><span>6. </span><input class="gap" id="g6" data-answer="that said" placeholder="___________" oninput="checkGap(this)"><span>, I understand the client's frustration, and we will make this a priority.</span></div>
+      <div class="gap-sent"><span>7. </span><input class="gap" id="g7" data-answer="crucially" placeholder="___________" oninput="checkGap(this)"><span>, there is no written record of the verbal agreement — which significantly weakens their position.</span></div>
+      <div class="gap-sent"><span>8. </span><input class="gap" id="g8" data-answer="on balance" placeholder="___________" oninput="checkGap(this)"><span>, I believe the evidence supports the claimant's case.</span></div>
+
+      <button class="btn" onclick="checkAllGaps('g', 8)">Check answers</button>
+      <button class="btn" onclick="revealGaps('g', 8)">Show answers</button>
+      <div class="score-bar" id="gap-score"></div>
+    </div>
+
+    <div class="card">
+      <h2>Gap fill — agree, disagree & hedge</h2>
+      <p class="sub">Choose the most appropriate phrase for each context.</p>
+
+      <div class="word-bank" id="wb2">
+        <span class="wchip">I see where you're coming from</span>
+        <span class="wchip">I couldn't agree more</span>
+        <span class="wchip">I'm not entirely convinced</span>
+        <span class="wchip">There's a case to be made for</span>
+        <span class="wchip">Up to a point</span>
+        <span class="wchip">With respect</span>
+      </div>
+
+      <div class="gap-sent"><span>1. "</span><input class="gap" id="h1" data-answer="i couldn't agree more" placeholder="___________" oninput="checkGap(this)" style="width:200px"><span>" — I've been saying the same thing for years.</span></div>
+      <div class="gap-sent"><span>2. "</span><input class="gap" id="h2" data-answer="i see where you're coming from" placeholder="___________" oninput="checkGap(this)" style="width:230px"><span>, but I think the evidence tells a different story."</span></div>
+      <div class="gap-sent"><span>3. "</span><input class="gap" id="h3" data-answer="i'm not entirely convinced" placeholder="___________" oninput="checkGap(this)" style="width:200px"><span> that settling out of court is the right move at this stage."</span></div>
+      <div class="gap-sent"><span>4. "</span><input class="gap" id="h4" data-answer="there's a case to be made for" placeholder="___________" oninput="checkGap(this)" style="width:230px"><span> mediation, but only if both parties are willing to negotiate in good faith."</span></div>
+      <div class="gap-sent"><span>5. "</span><input class="gap" id="h5" data-answer="up to a point" placeholder="___________" oninput="checkGap(this)" style="width:130px"><span>, yes — but you're overlooking the procedural risk."</span></div>
+      <div class="gap-sent"><span>6. "</span><input class="gap" id="h6" data-answer="with respect" placeholder="___________" oninput="checkGap(this)" style="width:120px"><span>, I think that interpretation of the clause is difficult to sustain."</span></div>
+
+      <button class="btn" onclick="checkAllGaps('h', 6)">Check answers</button>
+      <button class="btn" onclick="revealGaps('h', 6)">Show answers</button>
+      <div class="score-bar" id="gap2-score"></div>
+    </div>
+  </div>
+
+  <!-- ══ SORT & CLASSIFY ══ -->
+  <div class="panel" id="panel-sort">
+    <div class="card">
+      <h2>Drag & classify</h2>
+      <p class="sub">Drag each phrase into the correct category. Some may feel like they could fit more than one — choose the primary function.</p>
+
+      <div class="drag-pool" id="drag-pool"></div>
+
+      <div class="sort-container">
+        <div class="sort-col">
+          <div class="sort-col-title agree">Agree / confirm</div>
+          <div class="drop-zone" id="zone-agree" ondragover="onOver(event)" ondragleave="onLeave(event)" ondrop="onDrop(event,'agree')"></div>
+        </div>
+        <div class="sort-col">
+          <div class="sort-col-title partial">Agree partially</div>
+          <div class="drop-zone" id="zone-partial" ondragover="onOver(event)" ondragleave="onLeave(event)" ondrop="onDrop(event,'partial')"></div>
+        </div>
+        <div class="sort-col">
+          <div class="sort-col-title disagree">Disagree</div>
+          <div class="drop-zone" id="zone-disagree" ondragover="onOver(event)" ondragleave="onLeave(event)" ondrop="onDrop(event,'disagree')"></div>
+        </div>
+        <div class="sort-col">
+          <div class="sort-col-title hedge">Hedge / qualify</div>
+          <div class="drop-zone" id="zone-hedge" ondragover="onOver(event)" ondragleave="onLeave(event)" ondrop="onDrop(event,'hedge')"></div>
+        </div>
+      </div>
+
+      <button class="btn" onclick="checkSort()">Check answers</button>
+      <button class="btn" onclick="resetSort()">Reset</button>
+      <div class="reveal-box" id="sort-reveal"></div>
+    </div>
+  </div>
+
+  <!-- ══ ERROR CORRECTION ══ -->
+  <div class="panel" id="panel-errors">
+    <div class="card">
+      <h2>Error correction — argumentation language</h2>
+      <p class="sub">Each sentence contains one error. Rewrite the corrected version below.</p>
+
+      <div class="ec-item">
+        <div class="qnum">Sentence 1 — discourse marker misuse</div>
+        <div class="ec-sent">I agree with you. <span class="err">Despite</span>, I think we should consider the risks carefully.</div>
+        <input class="ec-input" data-answers="i agree with you. that said, i think we should consider the risks carefully|i agree with you. however, i think we should consider the risks carefully|i agree with you, but i think we should consider the risks carefully" placeholder="Write the corrected sentence..." oninput="clearEC(this)">
+        <div class="ec-fb" id="ecfb1"></div>
+      </div>
+
+      <div class="ec-item">
+        <div class="qnum">Sentence 2 — hedging word order</div>
+        <div class="ec-sent">It could argued <span class="err">be</span> that the contract is ambiguous on this point.</div>
+        <input class="ec-input" data-answers="it could be argued that the contract is ambiguous on this point" placeholder="Write the corrected sentence..." oninput="clearEC(this)">
+        <div class="ec-fb" id="ecfb2"></div>
+      </div>
+
+      <div class="ec-item">
+        <div class="qnum">Sentence 3 — concession structure</div>
+        <div class="ec-sent"><span class="err">Although</span> the delay was short, but the financial impact was significant.</div>
+        <input class="ec-input" data-answers="although the delay was short, the financial impact was significant|the delay was short, but the financial impact was significant|admittedly, the delay was short, but the financial impact was significant" placeholder="Write the corrected sentence..." oninput="clearEC(this)">
+        <div class="ec-fb" id="ecfb3"></div>
+      </div>
+
+      <div class="ec-item">
+        <div class="qnum">Sentence 4 — preposition error</div>
+        <div class="ec-sent">I see where you're coming <span class="err">of</span>, but I'm not fully persuaded.</div>
+        <input class="ec-input" data-answers="i see where you're coming from, but i'm not fully persuaded|i see where you are coming from, but i am not fully persuaded" placeholder="Write the corrected sentence..." oninput="clearEC(this)">
+        <div class="ec-fb" id="ecfb4"></div>
+      </div>
+
+      <div class="ec-item">
+        <div class="qnum">Sentence 5 — register / collocation</div>
+        <div class="ec-sent">On balance, I make the conclusion that the claimant has a strong case.</div>
+        <input class="ec-input" data-answers="on balance, i conclude that the claimant has a strong case|on balance, i would conclude that the claimant has a strong case|on balance, the conclusion is that the claimant has a strong case" placeholder="Write the corrected sentence..." oninput="clearEC(this)">
+        <div class="ec-fb" id="ecfb5"></div>
+      </div>
+
+      <div class="ec-item">
+        <div class="qnum">Sentence 6 — false concession</div>
+        <div class="ec-sent">Admittedly the evidence is very strong, <span class="err">so</span> the defence will struggle.</div>
+        <input class="ec-input" data-answers="admittedly, the evidence is strong, but the defence will still put up a fight|admittedly the evidence is very strong; nevertheless, the defence may challenge its admissibility|the evidence is very strong, so the defence will struggle" placeholder="Write the corrected sentence..." oninput="clearEC(this)">
+        <div class="ec-fb" id="ecfb6"></div>
+      </div>
+
+      <div class="ec-item">
+        <div class="qnum">Sentence 7 — modal verb</div>
+        <div class="ec-sent">There is a case to make <span class="err">for to settle</span> this dispute out of court.</div>
+        <input class="ec-input" data-answers="there is a case to be made for settling this dispute out of court|there is a case to be made for settling this out of court" placeholder="Write the corrected sentence..." oninput="clearEC(this)">
+        <div class="ec-fb" id="ecfb7"></div>
+      </div>
+
+      <div class="ec-item">
+        <div class="qnum">Sentence 8 — word choice / formality</div>
+        <div class="ec-sent"><span class="err">At the end</span>, I believe the court will rule in our client's favour.</div>
+        <input class="ec-input" data-answers="ultimately, i believe the court will rule in our client's favour|in the end, i believe the court will rule in our client's favour|all things considered, i believe the court will rule in our client's favour" placeholder="Write the corrected sentence..." oninput="clearEC(this)">
+        <div class="ec-fb" id="ecfb8"></div>
+      </div>
+
+      <button class="btn" onclick="checkAllEC()">Check answers</button>
+      <button class="btn" onclick="revealAllEC()">Show answers</button>
+      <div class="score-bar" id="ec-score"></div>
+      <div class="reveal-box" id="ec-reveal" style="margin-top:12px;">
+        <strong>Answer key:</strong><br>
+        1. "That said" or "However" — <em>Despite</em> needs a noun phrase: "Despite my agreement…"<br>
+        2. "It could <strong>be argued</strong> that…" — modal passive word order<br>
+        3. You can't use <em>although…but</em> together — drop one: "Although the delay was short, the impact was significant."<br>
+        4. "coming <strong>from</strong>" — fixed phrase<br>
+        5. "I <strong>conclude</strong> that…" — <em>make the conclusion</em> is not a standard collocation<br>
+        6. <em>Admittedly</em> signals concession before a contrast — the <em>so</em> breaks the logic. Use "but" or "nevertheless."<br>
+        7. "a case to be made for <strong>settling</strong>" — gerund after preposition, not infinitive<br>
+        8. "<strong>Ultimately</strong>" or "In the end" — <em>At the end</em> means at the end of a specific thing (a book, a film), not finally/ultimately
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ DEBATE ══ -->
+  <div class="panel" id="panel-debate">
+    <div class="card">
+      <h2>Debate — the dilemma</h2>
+      <p class="sub">Read carefully before you begin. Prepare your argument for Round 1. Round 2 brief will be revealed after.</p>
+
+      <div style="background:var(--accent-light); border-radius:8px; padding:16px 18px; margin-bottom:16px; font-family:'Cormorant Garamond',serif; font-size:1.05rem; line-height:1.7; border-left:4px solid var(--accent);">
+        <strong style="font-family:'Inter',sans-serif; font-size:0.8rem; letter-spacing:1px; text-transform:uppercase; color:var(--accent);">The dilemma</strong><br><br>
+        A lawyer discovers, midway through a case, that their client has been concealing a key piece of information — information that, if disclosed, would significantly weaken their case but might also prevent the court from being misled.<br><br>
+        <strong>Should the lawyer be legally required to disclose this information to the court, even against the client's wishes?</strong>
+      </div>
+
+      <div class="brief-box for">
+        <div class="brief-title for">Round 1 — Your position: YES (argue FOR disclosure)</div>
+        <p>Argue that the lawyer should be required to disclose. Your key points:</p>
+        <ul>
+          <li>The lawyer's duty to the court and to justice overrides their duty to the client in cases of active deception.</li>
+          <li>Professional ethics and bar regulations already mandate candour to the court.</li>
+          <li>Allowing concealment undermines the entire legal system's integrity.</li>
+        </ul>
+        <p style="margin-top:8px;"><strong>Think about:</strong> Are there exceptions? What does Polish law say? What does the client lose vs. what does the system gain?</p>
+      </div>
+
+      <button class="toggle-btn" onclick="toggleR2()">Reveal Round 2 brief (after Round 1 only)</button>
+
+      <div style="display:none;" id="r2-brief">
+        <div class="brief-box against" style="margin-top:14px;">
+          <div class="brief-title against">Round 2 — Now argue the OPPOSITE: NO (argue AGAINST disclosure)</div>
+          <p>Now defend client confidentiality. Key arguments:</p>
+          <ul>
+            <li>Attorney-client privilege is the cornerstone of the legal system.</li>
+            <li>Without it, clients won't be honest with their lawyers — which ultimately harms justice too.</li>
+            <li>The lawyer's role is advocacy, not prosecution.</li>
+            <li>The system has other mechanisms (cross-examination, opposing counsel) to surface the truth.</li>
+          </ul>
+          <p style="margin-top:8px;"><strong>The challenge:</strong> Argue this convincingly even if you personally disagree. That's the real test.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Debate preparation — planning grid</h2>
+      <p class="sub">Take 3 minutes to fill in this grid before the debate starts. You can use bullet points.</p>
+
+      <div style="margin-bottom:14px;">
+        <div class="qnum">My main point 1:</div>
+        <textarea class="open-input" placeholder="e.g. The duty to the court is enshrined in professional codes..."></textarea>
+      </div>
+      <div style="margin-bottom:14px;">
+        <div class="qnum">My main point 2:</div>
+        <textarea class="open-input" placeholder="e.g. Allowing concealment sets a dangerous precedent..."></textarea>
+      </div>
+      <div style="margin-bottom:14px;">
+        <div class="qnum">My main point 3:</div>
+        <textarea class="open-input" placeholder="e.g. The integrity of the system must take precedence..."></textarea>
+      </div>
+      <div style="margin-bottom:0;">
+        <div class="qnum">What will the other side argue? (anticipate 1–2 counter-arguments)</div>
+        <textarea class="open-input" placeholder="e.g. They might say attorney-client privilege..."></textarea>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Post-debate self-reflection</h2>
+      <p class="sub">Complete this after both rounds, before the debrief with your teacher.</p>
+
+      <div style="margin-bottom:14px;">
+        <div class="qnum">1. Which phrases from the wall did you actually use?</div>
+        <textarea class="open-input" placeholder="List them here..."></textarea>
+      </div>
+      <div style="margin-bottom:14px;">
+        <div class="qnum">2. What did you want to say but couldn't find the words for?</div>
+        <textarea class="open-input" placeholder="Describe the idea — your teacher can help you find the English expression..."></textarea>
+      </div>
+      <div style="margin-bottom:0;">
+        <div class="qnum">3. Which round felt harder — arguing FOR or AGAINST? Why?</div>
+        <textarea class="open-input" placeholder="Your reflection..."></textarea>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Teacher's brief</h2>
+      <p class="sub">Your role as the opposing voice in the debate.</p>
+      <button class="toggle-btn" onclick="toggleTeacher()">Show teacher's brief</button>
+      <div style="display:none;" id="teacher-brief">
+        <div class="brief-box teacher" style="margin-top:14px;">
+          <div class="brief-title teacher">Opposing position — argue AGAINST disclosure (Round 1)</div>
+          <p><strong>Your key arguments:</strong></p>
+          <ul>
+            <li>Attorney-client privilege is the foundation of honest lawyer-client communication.</li>
+            <li>Without it, clients won't tell their lawyers the truth — which ultimately harms justice.</li>
+            <li>The lawyer's job is advocacy, not finding the truth on the court's behalf.</li>
+            <li>Other mechanisms exist: cross-examination, opposing counsel, discovery.</li>
+          </ul>
+          <p style="margin-top:8px;"><strong>Challenge lines to use:</strong></p>
+          <ul>
+            <li>"Where exactly do you draw the line?"</li>
+            <li>"What if disclosing the information ruins an innocent client's case?"</li>
+            <li>"Isn't it the court's job to find the truth — not the lawyer's?"</li>
+            <li>"Can you give me a concrete example of where your rule would apply?"</li>
+            <li>"That's a very idealistic position — how does it work in practice?"</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ CONSOLIDATION ══ -->
+  <div class="panel" id="panel-consolidate">
+    <div class="card">
+      <h2>Consolidation — complete the sentences</h2>
+      <p class="sub">Complete each sentence starter spontaneously. Write naturally — there's no single correct answer. Aim for 1–2 sentences each.</p>
+
+      <div id="consolidation-list"></div>
+      <button class="btn" onclick="showAllConsolidation()">Show sample completions</button>
+    </div>
+
+    <div class="card">
+      <h2>Homework — opinion paragraph</h2>
+      <p class="sub">Write 6–8 sentences arguing FOR or AGAINST the statement below. Use at least 4 discourse markers (underline or bold them). Aim for formal but natural English — not a legal brief.</p>
+
+      <div style="font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-style:italic; padding:14px 18px; background:var(--accent-light); border-left:4px solid var(--accent); border-radius:0 8px 8px 0; margin-bottom:16px; line-height:1.7;">
+        "Lawyers have a greater duty to the justice system than to their individual clients."
+      </div>
+
+      <textarea class="open-input" style="min-height:160px;" placeholder="Write your paragraph here..."></textarea>
+
+      <div style="margin-top:14px;">
+        <button class="toggle-btn" onclick="toggleModel()">Show model answer</button>
+        <div style="display:none;" id="model-answer">
+          <div class="reveal-box show" style="margin-top:10px;">
+            It could be argued that a lawyer's primary obligation is to the justice system rather than to any individual client. First and foremost, the legal profession derives its authority and public trust from its commitment to upholding the law — not from winning cases at any cost. Furthermore, rules of professional conduct in most jurisdictions already impose a duty of candour to the court, which implicitly places justice above client loyalty in certain circumstances. That said, one must concede that attorney-client privilege is not merely a technicality; it is the foundation upon which honest communication between lawyer and client depends. Without it, clients would be reluctant to disclose information that their lawyers need to advise them properly. On balance, however, I believe that when client instructions actively conflict with the integrity of the judicial process, the lawyer's duty to the court must prevail. The fact remains that a lawyer who facilitates deception does not merely harm an opposing party — they undermine the system that grants them the right to practise.
+            <br><br><em>Discourse markers used: It could be argued that / First and foremost / Furthermore / That said / On balance / The fact remains that</em>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MIRO GUIDE ══ -->
+  <div class="panel" id="panel-miro">
+    <div class="card">
+      <h2>Miro board — Lesson 3 setup</h2>
+      <p class="sub">Four sections, horizontal layout. Prepare before the lesson — the Phrase Wall takes the most setup time.</p>
+
+      <div class="miro-frame">
+        <h3><span class="dot" style="background:#FFD966"></span> Section 1 — Homework review</h3>
+        <ul>
+          <li>Paste Adrian's email (or a screenshot) on the left.</li>
+          <li>Next to it, create two columns: <span class="sticky" style="background:#d4edda;">Well done ✓</span> <span class="sticky" style="background:#f8d7da;">Improve ✗</span></li>
+          <li>Pre-write your 1–2 corrections and 1 specific praise point before the lesson.</li>
+          <li>Keep this section brief — cover it in under 5 minutes.</li>
+        </ul>
+      </div>
+
+      <div class="miro-frame">
+        <h3><span class="dot" style="background:#C9A8E8"></span> Section 2 — Phrase Wall</h3>
+        <ul>
+          <li>Create 6 colour-coded groups (one per discourse marker function).</li>
+          <li>Suggested colours: <span class="sticky" style="background:#e8d5f5;">Opening</span> <span class="sticky" style="background:#d5e8f5;">Adding</span> <span class="sticky" style="background:#f5e8d5;">Contrasting</span> <span class="sticky" style="background:#d5f5e8;">Conceding</span> <span class="sticky" style="background:#f5d5d5;">Emphasising</span> <span class="sticky" style="background:#f5f5d5;">Concluding</span></li>
+          <li>Write each phrase on its own sticky. Leave space under each for an example sentence (type in live as Adrian uses them).</li>
+          <li>Add the agree/disagree/hedge phrases in a separate seventh group.</li>
+          <li>Reveal groups one at a time at minute 12 — don't show everything at once.</li>
+        </ul>
+      </div>
+
+      <div class="miro-frame">
+        <h3><span class="dot" style="background:#B5EAD7"></span> Section 3 — Debate prep</h3>
+        <ul>
+          <li>Pre-write the dilemma text in a large text box — visible to both of you.</li>
+          <li>Leave a blank sticky area for Adrian's 3 argument points (he fills these during prep time).</li>
+          <li>After Round 1, reveal Round 2 brief here — have it ready but covered.</li>
+        </ul>
+      </div>
+
+      <div class="miro-frame">
+        <h3><span class="dot" style="background:#FFDAC1"></span> Section 4 — Correction board</h3>
+        <ul>
+          <li>Same format as Lessons 1 & 2: <span class="sticky" style="background:#fdecea;">What was said</span> <span class="sticky" style="background:#e8f5e9;">Better version</span> <span class="sticky" style="background:#e0e7ff;">Target phrase</span></li>
+          <li>Populate during the debrief at minute 43 — max 3 entries.</li>
+          <li>Specifically: capture at least one missed discourse marker and one grammar point.</li>
+        </ul>
+      </div>
+
+      <div class="miro-frame" style="border-left:3px solid var(--accent);">
+        <h3 style="color:var(--accent)">Tips for Lesson 3</h3>
+        <ul>
+          <li>Keep the Goals board from Lesson 1 pinned in the corner — check in on progress at wrap-up.</li>
+          <li>During the debate, keep Miro minimised and stay focused on Adrian. Notes go on paper first.</li>
+          <li>The Phrase Wall is the most useful Miro element this lesson — make it look good. Adrian will photograph it.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ─── TABS ───────────────────────────────
+function show(id, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+
+// ─── PHRASE WALL DATA ───────────────────
+const phraseGroups = [
+  { title: "Opening a point", phrases: [
+    { text: "First and foremost,", ex: "First and foremost, we need to consider the client's financial exposure." },
+    { text: "To begin with,", ex: "To begin with, let me outline the key facts of the case." },
+    { text: "The key issue here is…", ex: "The key issue here is whether the contract was validly terminated." },
+  ]},
+  { title: "Adding a point", phrases: [
+    { text: "Furthermore,", ex: "Furthermore, the supplier failed to notify us of the delay." },
+    { text: "What's more,", ex: "What's more, this is not the first time this has happened." },
+    { text: "In addition to this,", ex: "In addition to this, the client has documentary evidence." },
+  ]},
+  { title: "Contrasting", phrases: [
+    { text: "However,", ex: "However, the court may take a different view on the damages." },
+    { text: "That said,", ex: "That said, I understand why the other side might argue this." },
+    { text: "On the other hand,", ex: "On the other hand, settling now could save both parties time and money." },
+  ]},
+  { title: "Conceding a point", phrases: [
+    { text: "Admittedly,", ex: "Admittedly, the delay was short, but the consequences were significant." },
+    { text: "I take your point, but…", ex: "I take your point, but the contract terms are quite explicit here." },
+    { text: "You're right that…, however…", ex: "You're right that the timeline was tight, however, they agreed to it." },
+  ]},
+  { title: "Emphasising", phrases: [
+    { text: "It's worth noting that…", ex: "It's worth noting that no written consent was obtained." },
+    { text: "The fact remains that…", ex: "The fact remains that the obligation was not met." },
+    { text: "Crucially,", ex: "Crucially, the client was never informed of the associated risks." },
+  ]},
+  { title: "Concluding", phrases: [
+    { text: "All things considered,", ex: "All things considered, I believe we have a strong case." },
+    { text: "On balance,", ex: "On balance, I'd recommend proceeding to arbitration." },
+    { text: "To sum up,", ex: "To sum up, the evidence clearly supports our client's position." },
+  ]},
+];
+
+const adhGroups = [
+  { title: "Agreeing strongly", phrases: [
+    { text: "Absolutely.", ex: "Absolutely — that's exactly the risk I had in mind." },
+    { text: "That's a fair point.", ex: "That's a fair point. I hadn't considered that angle." },
+    { text: "I couldn't agree more.", ex: "I couldn't agree more — transparency is essential here." },
+  ]},
+  { title: "Agreeing partially", phrases: [
+    { text: "There's something in that, though I'd add…", ex: "There's something in that, though I'd add that the timing matters too." },
+    { text: "Up to a point, yes, but…", ex: "Up to a point, yes, but you're overlooking the procedural risk." },
+  ]},
+  { title: "Disagreeing diplomatically", phrases: [
+    { text: "I see where you're coming from, but…", ex: "I see where you're coming from, but the evidence tells a different story." },
+    { text: "I'm not entirely convinced that…", ex: "I'm not entirely convinced that this is the right approach at this stage." },
+    { text: "With respect, I think…", ex: "With respect, I think that interpretation is difficult to sustain." },
+  ]},
+  { title: "Disagreeing firmly", phrases: [
+    { text: "I'm afraid I'd have to disagree.", ex: "I'm afraid I'd have to disagree — the precedent is clear on this." },
+    { text: "That's not quite how I see it.", ex: "That's not quite how I see it. Let me explain my reasoning." },
+  ]},
+  { title: "Hedging / being cautious", phrases: [
+    { text: "It could be argued that…", ex: "It could be argued that both parties share responsibility here." },
+    { text: "There's a case to be made for…", ex: "There's a case to be made for mediation before going to court." },
+    { text: "It's not entirely clear that…", ex: "It's not entirely clear that the clause applies in this situation." },
+  ]},
+];
+
+function buildWall(groups, containerId) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = groups.map(g => `
+    <div class="phrase-group">
+      <span class="phrase-group-title">${g.title}</span>
+      <div class="phrase-chips">
+        ${g.phrases.map(p => `<span class="chip" data-ex="${p.ex.replace(/"/g,'&quot;')}" onclick="toggleChip(this)">${p.text}</span>`).join('')}
+      </div>
+      <div class="chip-example" id="ex-${containerId}-${g.title.replace(/\s/g,'-')}"></div>
+    </div>
+  `).join('');
+}
+
+function toggleChip(el) {
+  const ex = el.dataset.ex;
+  const groupEl = el.closest('.phrase-group');
+  const exEl = groupEl.querySelector('.chip-example');
+  if (el.classList.contains('used')) {
+    el.classList.remove('used');
+    if (exEl.textContent === ex) exEl.textContent = '';
+  } else {
+    el.classList.add('used');
+    exEl.textContent = ex;
+  }
+}
+
+// ─── GAP FILL ───────────────────────────
+function norm(s) { return s.toLowerCase().replace(/[^\w\s']/g,'').replace(/\s+/g,' ').trim(); }
+
+function checkGap(input) {
+  const val = norm(input.value);
+  const ans = norm(input.dataset.answer);
+  if (!val) { input.classList.remove('ok','bad'); return; }
+  if (val === ans) { input.classList.add('ok'); input.classList.remove('bad'); }
+  else if (ans.startsWith(val) && val.length < ans.length) { input.classList.remove('ok','bad'); }
+  else { input.classList.add('bad'); input.classList.remove('ok'); }
+}
+
+function checkAllGaps(prefix, count) {
+  let correct = 0, answered = 0;
+  for (let i = 1; i <= count; i++) {
+    const inp = document.getElementById(prefix + i);
+    if (!inp) continue;
+    const val = norm(inp.value);
+    const ans = norm(inp.dataset.answer);
+    if (!val) continue;
+    answered++;
+    if (val === ans) { inp.classList.add('ok'); inp.classList.remove('bad'); correct++; }
+    else { inp.classList.add('bad'); inp.classList.remove('ok'); }
+  }
+  const barId = prefix === 'g' ? 'gap-score' : 'gap2-score';
+  if (answered > 0) {
+    const bar = document.getElementById(barId);
+    bar.innerHTML = `<span>${correct}</span> / ${answered} correct`;
+    bar.style.display = 'block';
+  }
+}
+
+function revealGaps(prefix, count) {
+  for (let i = 1; i <= count; i++) {
+    const inp = document.getElementById(prefix + i);
+    if (!inp) continue;
+    inp.value = inp.dataset.answer.split('|')[0];
+    inp.classList.add('ok'); inp.classList.remove('bad');
+  }
+}
+
+// ─── DRAG & DROP SORT ───────────────────
+const sortItems = [
+  { text: "Absolutely.", correct: "agree" },
+  { text: "I couldn't agree more.", correct: "agree" },
+  { text: "That's a fair point.", correct: "agree" },
+  { text: "Up to a point, yes, but…", correct: "partial" },
+  { text: "There's something in that, though I'd add…", correct: "partial" },
+  { text: "I see where you're coming from, but…", correct: "disagree" },
+  { text: "With respect, I think…", correct: "disagree" },
+  { text: "I'm afraid I'd have to disagree.", correct: "disagree" },
+  { text: "It could be argued that…", correct: "hedge" },
+  { text: "There's a case to be made for…", correct: "hedge" },
+  { text: "It's not entirely clear that…", correct: "hedge" },
+  { text: "I'm not entirely convinced that…", correct: "disagree" },
+];
+
+let dragged = null;
+
+function buildSort() {
+  const pool = document.getElementById('drag-pool');
+  pool.innerHTML = [...sortItems].sort(() => Math.random() - 0.5).map((item, i) =>
+    `<div class="drag-item" draggable="true" data-correct="${item.correct}" data-text="${item.text}"
+      ondragstart="onDragStart(event,this)" ondragend="onDragEnd(event,this)">${item.text}</div>`
+  ).join('');
+}
+
+function onDragStart(e, el) {
+  dragged = el;
+  setTimeout(() => el.classList.add('dragging'), 0);
+  e.dataTransfer.effectAllowed = 'move';
+}
+function onDragEnd(e, el) { el.classList.remove('dragging'); }
+function onOver(e) { e.preventDefault(); e.currentTarget.classList.add('over'); }
+function onLeave(e) { e.currentTarget.classList.remove('over'); }
+function onDrop(e, zone) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('over');
+  if (dragged) {
+    e.currentTarget.appendChild(dragged);
+    dragged = null;
+  }
+}
+
+function checkSort() {
+  const zones = ['agree','partial','disagree','hedge'];
+  let correct = 0, total = 0;
+  zones.forEach(zone => {
+    const zoneEl = document.getElementById('zone-' + zone);
+    zoneEl.querySelectorAll('.drag-item').forEach(item => {
+      total++;
+      if (item.dataset.correct === zone) {
+        item.style.borderColor = 'var(--green)'; item.style.background = 'var(--green-bg)'; correct++;
+      } else {
+        item.style.borderColor = 'var(--red)'; item.style.background = 'var(--red-bg)';
+      }
+    });
+  });
+  const rev = document.getElementById('sort-reveal');
+  rev.innerHTML = `<strong>${correct} / ${total} correct.</strong> Items in red are misplaced — drag them to the right column.`;
+  rev.classList.add('show');
+}
+
+function resetSort() {
+  const pool = document.getElementById('drag-pool');
+  ['agree','partial','disagree','hedge'].forEach(zone => {
+    document.getElementById('zone-'+zone).querySelectorAll('.drag-item').forEach(item => {
+      item.style.borderColor = ''; item.style.background = '';
+      pool.appendChild(item);
+    });
+  });
+  document.getElementById('sort-reveal').classList.remove('show');
+}
+
+// ─── ERROR CORRECTION ───────────────────
+function clearEC(inp) {
+  inp.classList.remove('ok','bad');
+  const fb = inp.nextElementSibling;
+  if (fb) { fb.classList.remove('show','ok','bad'); }
+}
+
+function checkAllEC() {
+  const inputs = document.querySelectorAll('#panel-errors .ec-input');
+  let correct = 0, answered = 0;
+  inputs.forEach((inp, i) => {
+    const val = norm(inp.value);
+    if (!val) return;
+    answered++;
+    const answers = inp.dataset.answers.split('|').map(norm);
+    const fb = document.getElementById('ecfb' + (i+1));
+    const match = answers.some(a => val === a || (val.length > 8 && a.includes(val)) || (val.length > 8 && val.includes(a)));
+    if (match) {
+      inp.classList.add('ok'); inp.classList.remove('bad');
+      fb.textContent = '✓ Correct!'; fb.className = 'ec-fb show ok'; correct++;
+    } else {
+      inp.classList.add('bad'); inp.classList.remove('ok');
+      fb.textContent = '✗ Not quite — try again or click "Show answers".'; fb.className = 'ec-fb show bad';
+    }
+  });
+  if (answered > 0) {
+    const bar = document.getElementById('ec-score');
+    bar.innerHTML = `<span>${correct}</span> / ${answered} correct`;
+    bar.style.display = 'block';
+  }
+}
+
+function revealAllEC() {
+  document.getElementById('ec-reveal').classList.add('show');
+}
+
+// ─── TOGGLE HELPERS ─────────────────────
+function toggleR2() {
+  const el = document.getElementById('r2-brief');
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+  event.target.textContent = el.style.display === 'none' ? 'Reveal Round 2 brief (after Round 1 only)' : 'Hide Round 2 brief';
+}
+function toggleTeacher() {
+  const el = document.getElementById('teacher-brief');
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+  event.target.textContent = el.style.display === 'none' ? 'Show teacher\'s brief' : 'Hide teacher\'s brief';
+}
+function toggleModel() {
+  const el = document.getElementById('model-answer');
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+  event.target.textContent = el.style.display === 'none' ? 'Show model answer' : 'Hide model answer';
+}
+
+// ─── CONSOLIDATION ──────────────────────
+const consolidationItems = [
+  { starter: "Admittedly,", prompt: "Concede a point about the legal dilemma, then add a contrast.", sample: "Admittedly, client privilege is fundamental to the legal system — however, it cannot be used as a shield for deception." },
+  { starter: "On the other hand,", prompt: "Argue the opposite of your Round 1 position in one sentence.", sample: "On the other hand, one could argue that without confidentiality, clients would simply stop telling their lawyers the truth." },
+  { starter: "It could be argued that…", prompt: "Hedge a strong claim about lawyers' duties.", sample: "It could be argued that a lawyer's duty to the court ultimately serves the client's long-term interests, even when it conflicts with their immediate wishes." },
+  { starter: "The fact remains that…", prompt: "Make a firm, concluding statement about the dilemma.", sample: "The fact remains that allowing a lawyer to conceal evidence places them in direct conflict with the oath they take to uphold justice." },
+  { starter: "I see where you're coming from, but…", prompt: "Respond diplomatically to this view: 'Clients must be able to trust their lawyers completely.'", sample: "I see where you're coming from, but trust doesn't require a lawyer to mislead the court — quite the opposite, in fact." },
+  { starter: "To sum up,", prompt: "Conclude your overall view on the dilemma in 1–2 sentences.", sample: "To sum up, while client privilege is vital, it has never been, and should never become, an instrument of deception in the courtroom." },
+];
+
+function buildConsolidation() {
+  const cont = document.getElementById('consolidation-list');
+  cont.innerHTML = consolidationItems.map((item, i) => `
+    <div class="ec-item" style="${i === consolidationItems.length - 1 ? 'border-bottom:none;padding-bottom:0;' : ''}">
+      <div class="qnum">Sentence ${i+1}</div>
+      <div class="phrase-prompt">${item.starter}</div>
+      <div style="font-size:0.82rem; color:var(--muted); margin-bottom:6px; font-style:italic;">${item.prompt}</div>
+      <textarea class="open-input" placeholder="Complete the sentence..."></textarea>
+      <div class="reveal-box" id="con${i}"><strong>Sample:</strong> ${item.sample}</div>
+    </div>
+  `).join('');
+}
+
+function showAllConsolidation() {
+  consolidationItems.forEach((_, i) => {
+    const el = document.getElementById('con' + i);
+    if (el) el.classList.add('show');
+  });
+}
+
+// ─── INIT ───────────────────────────────
+buildWall(phraseGroups, 'phrase-wall');
+buildWall(adhGroups, 'adh-wall');
+buildSort();
+buildConsolidation();
+</script>
+</body>
+</html>
